@@ -2,7 +2,7 @@
 
 # Esperar a que la base de datos esté disponible
 echo "Esperando a que la base de datos esté disponible..."
-while ! mysqladmin ping -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" --silent; do
+while ! mysqladmin ping -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" --silent --ssl-mode=DISABLED; do
     echo "Base de datos no disponible, esperando..."
     sleep 2
 done
@@ -19,7 +19,7 @@ sed -i "s/\$folder = '\/Travelmap';/\$folder = '';/" /var/www/html/config/config
 
 # Ejecutar el script SQL para crear las tablas
 echo "Ejecutando script SQL..."
-mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" < /var/www/html/database.sql
+mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" --ssl-mode=DISABLED < /var/www/html/database.sql
 
 # Ejecutar el script para crear usuario admin
 echo "Creando usuario administrador..."
