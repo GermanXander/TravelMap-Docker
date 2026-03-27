@@ -1,13 +1,18 @@
 # Usar imagen base de PHP con Apache
 FROM php:8.1-apache
 
-# Instalar extensiones de PHP requeridas
-RUN docker-php-ext-install pdo pdo_mysql gd fileinfo curl
-
-# Instalar herramientas adicionales si es necesario (opcional)
+# Instalar dependencias de build y herramientas necesarias
 RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libcurl4-openssl-dev \
     mariadb-client \
     && rm -rf /var/lib/apt/lists/*
+
+# Instalar extensiones de PHP requeridas
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo pdo_mysql gd fileinfo curl
 
 # Copiar el código del proyecto al contenedor
 COPY . /var/www/html/
