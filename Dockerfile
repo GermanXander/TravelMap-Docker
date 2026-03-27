@@ -8,14 +8,15 @@ RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     libcurl4-openssl-dev \
     mariadb-client \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
 # Instalar extensiones de PHP requeridas
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo pdo_mysql gd fileinfo curl
 
-# Copiar el código del proyecto al contenedor
-COPY . /var/www/html/
+# Clonar el repositorio de TravelMap
+RUN git clone https://github.com/fabiomb/TravelMap.git /var/www/html/
 
 # Cambiar propietario de los archivos a www-data
 RUN chown -R www-data:www-data /var/www/html/
