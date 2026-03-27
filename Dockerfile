@@ -20,6 +20,11 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 # Instalar imagick desde PECL
 RUN pecl install imagick && docker-php-ext-enable imagick
 
+# Configurar límites de carga de archivos
+RUN echo "upload_max_filesize = 500M" > /usr/local/etc/php/conf.d/uploads.ini && \
+    echo "post_max_size = 500M" >> /usr/local/etc/php/conf.d/uploads.ini && \
+    echo "max_file_uploads = 200" >> /usr/local/etc/php/conf.d/uploads.ini
+
 # Clonar el repositorio de TravelMap
 RUN git clone https://github.com/fabiomb/TravelMap.git /var/www/html/
 
