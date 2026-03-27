@@ -1,6 +1,7 @@
 # TravelMap Docker
 
 Este Dockerfile permite ejecutar TravelMap (https://github.com/fabiomb/TravelMap) en un contenedor Docker con una base de datos MariaDB externa.
+Créditos para el gran trabajo de **fabiomb**
 
 ## Requisitos
 
