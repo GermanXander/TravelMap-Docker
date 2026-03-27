@@ -17,13 +17,19 @@ RUN apt-get update && apt-get install -y \
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo pdo_mysql gd fileinfo curl exif zip
 
+# Habilitar todas las extensiones
+RUN docker-php-ext-enable pdo pdo_mysql gd fileinfo curl exif zip
+
 # Instalar imagick desde PECL
 RUN pecl install imagick && docker-php-ext-enable imagick
 
 # Configurar límites de carga de archivos
 RUN echo "upload_max_filesize = 500M" > /usr/local/etc/php/conf.d/uploads.ini && \
     echo "post_max_size = 500M" >> /usr/local/etc/php/conf.d/uploads.ini && \
-    echo "max_file_uploads = 200" >> /usr/local/etc/php/conf.d/uploads.ini
+    echo "max_file_uploads = 200" >> /usr/local/etc/php/conf.d/uploads.ini && \
+    echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/uploads.ini && \
+    echo "display_errors = Off" >> /usr/local/etc/php/conf.d/uploads.ini && \
+    echo "log_errors = On" >> /usr/local/etc/php/conf.d/uploads.ini
 
 # Clonar el repositorio de TravelMap
 RUN git clone https://github.com/fabiomb/TravelMap.git /var/www/html/
@@ -33,7 +39,8 @@ RUN chown -R www-data:www-data /var/www/html/
 
 # Crear directorios necesarios con permisos
 RUN mkdir -p /var/www/html/uploads && \
-    chown -R www-data:www-data /var/www/html/uploads
+    chmod -R 775 /var/www/html/uploads && \
+    chown -R www-data:www-data /var/www/html/
 
 # Exponer puerto 80
 EXPOSE 80

@@ -14,8 +14,9 @@ sed -i "s/private const DB_NAME = 'travelmap';/private const DB_NAME = '${DB_NAM
 sed -i "s/private const DB_USER = 'root';/private const DB_USER = '${DB_USER}';/" /var/www/html/config/db.php
 sed -i "s/private const DB_PASS = '';/private const DB_PASS = '${DB_PASSWORD}';/" /var/www/html/config/db.php
 
-# Modificar config/config.php para ajustar la URL base
+# Modificar config/config.php para ajustar la URL base y desactivar display_errors
 sed -i "s/\$folder = '\/Travelmap';/\$folder = '';/" /var/www/html/config/config.php
+sed -i "s/ini_set('display_errors', 1);/ini_set('display_errors', 0);/" /var/www/html/config/config.php
 
 # Ejecutar el script SQL para crear las tablas
 echo "Ejecutando script SQL..."
