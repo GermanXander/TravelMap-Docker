@@ -7,13 +7,18 @@ RUN apt-get update && apt-get install -y \
     libjpeg-dev \
     libfreetype6-dev \
     libcurl4-openssl-dev \
+    libmagickwand-dev \
+    libzip-dev \
     mariadb-client \
     git \
     && rm -rf /var/lib/apt/lists/*
 
 # Instalar extensiones de PHP requeridas
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo pdo_mysql gd fileinfo curl
+    && docker-php-ext-install pdo pdo_mysql gd fileinfo curl exif zip
+
+# Instalar imagick desde PECL
+RUN pecl install imagick && docker-php-ext-enable imagick
 
 # Clonar el repositorio de TravelMap
 RUN git clone https://github.com/fabiomb/TravelMap.git /var/www/html/
