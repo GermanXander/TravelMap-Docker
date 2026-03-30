@@ -29,8 +29,25 @@ mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" --skip-
 echo "Creando usuario administrador..."
 php /var/www/html/install/seed_admin.php > /dev/null 2>&1
 
+# Configurar cron job para limpiar geocode_cache (diariamente a las 2 AM)
+echo "Configurando CRON para limpiar geocode_cache..."
+cat > /etc/cron.d/travelmap-geocode-cleanup <<EOF
+# Limpiar geocode_cache diariamente a las 2 AM
+0 2 * * * root mysql -h${DB_HOST} -P${DB_PORT} -u${DB_USER} -p${DB_PASSWORD} ${DB_NAME} --skip-ssl -e "DELETE FROM geocode_cache WHERE created_at < DATE_SUB(NOW(), INTERVAL 30 DAY);" >> /var/log/cron-geocode-cleanup.log 2>&1
+EOF
+
+chmod 0644 /etc/cron.d/travelmap-geocode-cleanup
+
+# Crear archivo de log para cron
+touch /var/log/cron-geocode-cleanup.log
+chmod 666 /var/log/cron-geocode-cleanup.log
+
 # Eliminar la carpeta install por seguridad
 rm -rf /var/www/html/install
+
+# Iniciar el daemon cron
+echo "Iniciando CRON daemon..."
+/usr/sbin/cron
 
 # Iniciar Apache
 echo "Iniciando Apache..."

@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y \
     libmagickwand-dev \
     libzip-dev \
     mariadb-client \
+    cron \
     git \
     && rm -rf /var/lib/apt/lists/*
 
@@ -31,8 +32,14 @@ RUN echo "upload_max_filesize = 500M" > /usr/local/etc/php/conf.d/uploads.ini &&
     echo "display_errors = Off" >> /usr/local/etc/php/conf.d/uploads.ini && \
     echo "log_errors = On" >> /usr/local/etc/php/conf.d/uploads.ini
 
-# Clonar el repositorio de TravelMap
-RUN git clone https://github.com/GermanXander/TravelMap.git /var/www/html/
+# Clonar el repositorio de TravelMap (branch conHora)
+# DESCOMENTAR PARA PRODUCCIÓN:
+# RUN git clone --depth 1 -b conHora https://github.com/GermanXander/TravelMap.git /var/www/html/
+# EN DESARROLLO: usar volumen local desde docker-compose.yml
+
+# Para desarrollo: el volumen se monta en docker-compose.yml
+# Crear estructura base si no existe (útil para primera ejecución sin volumen)
+RUN mkdir -p /var/www/html
 
 # Cambiar propietario de los archivos a www-data
 RUN chown -R www-data:www-data /var/www/html/
